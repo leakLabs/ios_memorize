@@ -13,7 +13,7 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         GeometryReader { geometry in
             if verticalSizeClass == .compact {
-                landscapeLayout
+                landscapeLayout(in: geometry.size)
             } else {
                 portraitLayout
             }
@@ -36,45 +36,155 @@ struct EmojiMemoryGameView: View {
     
     private var portraitLayout: some View {
         VStack(spacing: 0) {
-            // Шапка с заголовком и счетом
             header
                 .padding(.horizontal)
                 .padding(.top)
             
             Spacer(minLength: 0)
             
-            // Сетка с картами
             cards
                 .padding(.horizontal, 8)
             
             Spacer(minLength: 0)
             
-            // Кнопки управления
             controlButtons
                 .padding(.horizontal)
                 .padding(.bottom, 20)
         }
     }
     
-    private var landscapeLayout: some View {
-        HStack(spacing: 0) {
-            cards
-                .padding(8)
+    private func landscapeLayout(in size: CGSize) -> some View {
+        let sidebarWidth: CGFloat = min(160, size.width * 0.22)
+        let cardsWidth = size.width - sidebarWidth - 16
+        
+        return HStack(spacing: 8) {
+            // Карты слева
+            cards(in: CGSize(width: cardsWidth, height: size.height))
+                .frame(width: cardsWidth)
+                .padding(.leading, 8)
+                .padding(.vertical, 8)
             
-            VStack(spacing: 20) {
-                header
-                Spacer()
-                VStack(spacing: 15) {
-                    chooseThemeButton
-                    newGameButton
-                    shuffleButton
-                    hintButton
+            // Компактная боковая панель справа
+            VStack(spacing: 0) {
+                // Компактный заголовок
+                VStack(spacing: 4) {
+                    Text(viewModel.theme.name)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(viewModel.theme.color)
+                        .lineLimit(1)
+                    
+                    HStack(spacing: 4) {
+                        Text("Счёт:")
+                            .font(.caption)
+                        Text("\(viewModel.score)")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(viewModel.theme.color)
+                            .monospacedDigit()
+                    }
                 }
+                .padding(.top, 8)
+                
+                Spacer()
+                
+                // Компактные кнопки в виде сетки 2x2
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 12) {
+                    compactButton(
+                        icon: "paintbrush.fill",
+                        label: "Theme",
+                        color: viewModel.theme.color
+                    ) {
+                        showingThemeChooser = true
+                    }
+                    
+                    compactButton(
+                        icon: "plus.circle.fill",
+                        label: "New",
+                        color: .blue
+                    ) {
+                        withAnimation {
+                            viewModel.newGame(with: viewModel.theme)
+                        }
+                    }
+                    
+                    compactButton(
+                        icon: "shuffle.circle.fill",
+                        label: "Shuffle",
+                        color: .orange
+                    ) {
+                        withAnimation {
+                            viewModel.shuffle()
+                        }
+                    }
+                    
+                    compactHintButton
+                }
+                .padding(.horizontal, 8)
+                
                 Spacer()
             }
-            .frame(maxWidth: 200)
-            .padding()
+            .frame(width: sidebarWidth)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.systemBackground).opacity(0.8))
+            )
+            .padding(.trailing, 8)
+            .padding(.vertical, 8)
         }
+    }
+    
+    private func compactButton(
+        icon: String,
+        label: String,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 2) {
+                Image(systemName: icon)
+                    .font(.system(size: 22))
+                Text(label)
+                    .font(.system(size: 9))
+                    .fontWeight(.medium)
+            }
+            .foregroundColor(color)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 6)
+        }
+    }
+    
+    private var compactHintButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.useHint()
+            }
+        }) {
+            VStack(spacing: 2) {
+                ZStack {
+                    Image(systemName: "lightbulb.circle.fill")
+                        .font(.system(size: 22))
+                    
+                    if viewModel.hintsRemaining > 0 {
+                        Text("\(viewModel.hintsRemaining)")
+                            .font(.system(size: 8))
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .offset(x: 8, y: -8)
+                    }
+                }
+                Text("Hint")
+                    .font(.system(size: 9))
+                    .fontWeight(.medium)
+            }
+            .foregroundColor(viewModel.hintsRemaining > 0 ? viewModel.theme.color : .gray)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 6)
+        }
+        .disabled(viewModel.hintsRemaining == 0)
     }
     
     private var header: some View {
@@ -110,27 +220,40 @@ struct EmojiMemoryGameView: View {
         }
     }
     
+    // Версия для portrait
     private var cards: some View {
         GeometryReader { geometry in
-            let gridItemSize = gridItemWidthThatFits(
-                count: viewModel.cards.count,
-                in: geometry.size,
-                aspectRatio: aspectRatio
-            )
-            
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
-                ForEach(viewModel.cards) { card in
-                    CardView(
-                        card: card,
-                        theme: viewModel.theme,
-                        forceShowFaceUp: viewModel.isShowingHint
-                    )
-                    .aspectRatio(aspectRatio, contentMode: .fit)
-                    .padding(4)
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.5)) {
-                            viewModel.choose(card)
-                        }
+            cardsGrid(in: geometry.size)
+        }
+    }
+    
+    // Версия для landscape
+    private func cards(in size: CGSize) -> some View {
+        cardsGrid(in: size)
+    }
+    
+    private func cardsGrid(in size: CGSize) -> some View {
+        let gridItemSize = gridItemWidthThatFits(
+            count: viewModel.cards.count,
+            in: size,
+            aspectRatio: aspectRatio
+        )
+        
+        return LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)],
+            spacing: 0
+        ) {
+            ForEach(viewModel.cards) { card in
+                CardView(
+                    card: card,
+                    theme: viewModel.theme,
+                    forceShowFaceUp: viewModel.isShowingHint
+                )
+                .aspectRatio(aspectRatio, contentMode: .fit)
+                .padding(4)
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        viewModel.choose(card)
                     }
                 }
             }
