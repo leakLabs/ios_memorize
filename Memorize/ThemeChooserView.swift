@@ -133,7 +133,7 @@ struct ThemeChooserView: View {
     private var themesList: some View {
         VStack(spacing: 12) {
             ForEach(Theme.all, id: \.name) { theme in
-                ThemeCard(theme: theme, difficulty: selectedDifficulty) {
+                ThemeCard(theme: theme) {
                     startGame(with: theme)
                 }
             }
@@ -180,7 +180,6 @@ struct DifficultyButton: View {
 
 struct ThemeCard: View {
     let theme: Theme
-    let difficulty: Difficulty
     let action: () -> Void
     
     var body: some View {
@@ -198,10 +197,6 @@ struct ThemeCard: View {
                     Text(theme.name)
                         .font(.headline)
                         .foregroundColor(.primary)
-                    
-                    Text("\(difficulty.numberOfPairs) пар карт")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
                 }
                 
                 Spacer()
@@ -238,10 +233,6 @@ struct RandomThemeCard: View {
                     Text("Случайная тема")
                         .font(.headline)
                         .foregroundColor(.primary)
-                    
-                    Text("Сюрприз!")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
                 }
                 
                 Spacer()
@@ -344,10 +335,6 @@ struct CompactRandomThemeCard: View {
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
                     .lineLimit(1)
-                
-                Text("Сюрприз!")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

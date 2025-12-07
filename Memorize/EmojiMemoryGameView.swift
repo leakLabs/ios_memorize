@@ -95,7 +95,7 @@ struct EmojiMemoryGameView: View {
                 ], spacing: 12) {
                     compactButton(
                         icon: "paintbrush.fill",
-                        label: "Theme",
+                        label: "Тема",
                         color: viewModel.theme.color
                     ) {
                         showingThemeChooser = true
@@ -103,7 +103,7 @@ struct EmojiMemoryGameView: View {
                     
                     compactButton(
                         icon: "plus.circle.fill",
-                        label: "New",
+                        label: "Новая игра",
                         color: .blue
                     ) {
                         withAnimation {
@@ -113,7 +113,7 @@ struct EmojiMemoryGameView: View {
                     
                     compactButton(
                         icon: "shuffle.circle.fill",
-                        label: "Shuffle",
+                        label: "Перемешать",
                         color: .orange
                     ) {
                         withAnimation {
@@ -176,7 +176,7 @@ struct EmojiMemoryGameView: View {
                             .offset(x: 8, y: -8)
                     }
                 }
-                Text("Hint")
+                Text("Подсказка")
                     .font(.system(size: 9))
                     .fontWeight(.medium)
             }
@@ -275,8 +275,8 @@ struct EmojiMemoryGameView: View {
         }) {
             VStack(spacing: 5) {
                 Image(systemName: "paintbrush.fill")
-                    .font(.system(size: 30))
-                Text("Theme")
+                    .font(.system(size: 25))
+                Text("Тема")
                     .font(.caption)
                     .fontWeight(.semibold)
             }
@@ -293,7 +293,7 @@ struct EmojiMemoryGameView: View {
             VStack(spacing: 5) {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 30))
-                Text("New Game")
+                Text("Новая игра")
                     .font(.caption)
                     .fontWeight(.semibold)
             }
@@ -310,7 +310,7 @@ struct EmojiMemoryGameView: View {
             VStack(spacing: 5) {
                 Image(systemName: "shuffle.circle.fill")
                     .font(.system(size: 30))
-                Text("Shuffle")
+                Text("Перемешать")
                     .font(.caption)
                     .fontWeight(.semibold)
             }
@@ -337,7 +337,7 @@ struct EmojiMemoryGameView: View {
                             .offset(x: 10, y: -10)
                     }
                 }
-                Text("Hint")
+                Text("Подсказка")
                     .font(.caption)
                     .fontWeight(.semibold)
             }

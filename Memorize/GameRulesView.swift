@@ -109,7 +109,7 @@ struct GameRulesView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Назад") {
                         dismiss()
                     }
