@@ -1,9 +1,4 @@
 //
-//  MemorizeGameApp.swift
-//  Memorize
-//
-//  Created for University Project
-//
 
 import SwiftUI
 

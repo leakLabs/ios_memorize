@@ -1,9 +1,4 @@
 //
-//  MemoryGame.swift
-//  Memorize
-//
-//  Model: Логика игры
-//
 
 import Foundation
 
@@ -19,7 +14,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
-        // Создаем пары карт
+        // Создание пары карт
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = cardContentFactory(pairIndex)
             cards.append(Card(content: content, id: pairIndex * 2))
@@ -34,7 +29,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
            !cards[chosenIndex].isMatched {
             
             if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
-                // Уже есть одна открытая карта, проверяем совпадение
                 cards[chosenIndex].isFaceUp = true
                 
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
@@ -50,7 +44,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                         score -= 1
                     }
                 }
-                // Отмечаем карты как увиденные
                 seenCards.insert(cards[chosenIndex].id)
                 seenCards.insert(cards[potentialMatchIndex].id)
             } else {
@@ -61,7 +54,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     mutating func markMatchedCards() {
-        // Помечаем совпавшие карты как matched (вызывается с задержкой)
         let faceUpCards = cards.filter { $0.isFaceUp && !$0.isMatched }
         
         if faceUpCards.count == 2 {

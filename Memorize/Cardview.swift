@@ -1,9 +1,4 @@
 //
-//  CardView.swift
-//  Memorize
-//
-//  View: Компонент отдельной карты
-//
 
 import SwiftUI
 
@@ -22,23 +17,19 @@ struct CardView: View {
                 let base = RoundedRectangle(cornerRadius: 12)
                 
                 Group {
-                    // Лицевая сторона карты
                     base.fill(.white)
                     base.strokeBorder(lineWidth: 2)
                         .foregroundColor(theme.color)
                     
-                    // Фрагмент круговой диаграммы (для красоты)
                     Pie(startAngle: theme.pieStartAngle, endAngle: theme.pieEndAngle)
                         .fill(theme.color.opacity(0.3))
                         .padding(5)
                     
-                    // Эмодзи
                     Text(card.content)
                         .font(.system(size: min(geometry.size.width, geometry.size.height) * 0.5))
                 }
                 .opacity(shouldShowFaceUp ? 1 : 0)
                 
-                // Обратная сторона карты
                 base.fill(theme.cardBackColor)
                                     .opacity(shouldShowFaceUp ? 0 : 1)
             }
@@ -50,8 +41,6 @@ struct CardView: View {
         }
     }
 }
-
-// MARK: - Pie Shape (фрагмент круговой диаграммы)
 
 struct Pie: Shape {
     var startAngle: Angle
@@ -79,18 +68,4 @@ struct Pie: Shape {
         p.addLine(to: center)
         return p
     }
-}
-
-#Preview {
-    VStack {
-        HStack {
-            CardView(card: MemoryGame<String>.Card(isFaceUp: true, content: "🌸", id: 1), theme: .flowers)
-            CardView(card: MemoryGame<String>.Card(isFaceUp: false, content: "🌸", id: 2), theme: .flowers)
-        }
-        HStack {
-            CardView(card: MemoryGame<String>.Card(isFaceUp: true, isMatched: true, content: "🌺", id: 3), theme: .animals)
-            CardView(card: MemoryGame<String>.Card(content: "🌻", id: 4), theme: .food, forceShowFaceUp: true)
-        }
-    }
-    .padding()
 }

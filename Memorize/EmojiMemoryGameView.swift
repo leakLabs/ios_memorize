@@ -1,9 +1,4 @@
 //
-//  EmojiMemoryGameView.swift
-//  Memorize
-//
-//  View: Пользовательский интерфейс игры
-//
 
 import SwiftUI
 
@@ -18,10 +13,8 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         GeometryReader { geometry in
             if verticalSizeClass == .compact {
-                // Альбомная ориентация
                 landscapeLayout
             } else {
-                // Вертикальная ориентация
                 portraitLayout
             }
         }
@@ -65,11 +58,9 @@ struct EmojiMemoryGameView: View {
     
     private var landscapeLayout: some View {
         HStack(spacing: 0) {
-            // Левая панель - карты
             cards
                 .padding(8)
             
-            // Правая панель - управление
             VStack(spacing: 20) {
                 header
                 Spacer()
@@ -95,7 +86,6 @@ struct EmojiMemoryGameView: View {
                 
                 Spacer()
                 
-                // Название темы
                 Text(viewModel.theme.name)
                     .font(.headline)
                     .foregroundColor(viewModel.theme.color)
@@ -107,7 +97,6 @@ struct EmojiMemoryGameView: View {
                     )
             }
             
-            // Счет
             HStack {
                 Text("Счет:")
                     .font(.title2)
@@ -253,8 +242,4 @@ struct EmojiMemoryGameView: View {
         } while columnCount < count
         return min(size.width / count, size.height * aspectRatio).rounded(.down)
     }
-}
-
-#Preview {
-    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
 }

@@ -1,9 +1,4 @@
 //
-//  GameRulesView.swift
-//  Memorize
-//
-//  View: Экран с правилами игры
-//
 
 import SwiftUI
 
@@ -14,19 +9,16 @@ struct GameRulesView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Заголовок
                     Text("Правила игры")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top)
                     
-                    // Цель игры
                     RuleSection(title: "🎯 Цель игры") {
                         Text("Найдите все пары одинаковых карт. Открывайте по две карты за раз и запоминайте их расположение.")
                             .foregroundColor(.secondary)
                     }
                     
-                    // Как играть
                     RuleSection(title: "🎮 Как играть") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("1. Нажмите на карту, чтобы перевернуть её")
@@ -39,7 +31,6 @@ struct GameRulesView: View {
                         .foregroundColor(.secondary)
                     }
                     
-                    // Система очков
                     RuleSection(title: "⭐ Система очков") {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
@@ -64,13 +55,11 @@ struct GameRulesView: View {
                         .font(.subheadline)
                     }
                     
-                    // Подсказка
                     RuleSection(title: "💡 Подсказка") {
                         Text("У вас есть одна подсказка на игру. При использовании все карты переворачиваются на 1 секунду. Штраф: 5 очков.")
                             .foregroundColor(.secondary)
                     }
                     
-                    // Кнопки
                     RuleSection(title: "🎛 Кнопки") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("• Theme - выбор темы оформления")
@@ -82,7 +71,6 @@ struct GameRulesView: View {
                         .foregroundColor(.secondary)
                     }
                     
-                    // Темы
                     RuleSection(title: "🎨 Темы") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("• Цветы 🌸 (зеленая)")
@@ -94,7 +82,6 @@ struct GameRulesView: View {
                         .foregroundColor(.secondary)
                     }
                     
-                    // Сложность
                     RuleSection(title: "📊 Сложность") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("• Легко - 8 пар (16 карт)")
@@ -105,7 +92,6 @@ struct GameRulesView: View {
                         .foregroundColor(.secondary)
                     }
                     
-                    // Советы
                     RuleSection(title: "💭 Советы") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("• Концентрируйтесь на запоминании")
@@ -133,8 +119,6 @@ struct GameRulesView: View {
     }
 }
 
-// MARK: - Rule Section
-
 struct RuleSection<Content: View>: View {
     let title: String
     let content: () -> Content
@@ -153,8 +137,4 @@ struct RuleSection<Content: View>: View {
                 .fill(Color.gray.opacity(0.1))
         )
     }
-}
-
-#Preview {
-    GameRulesView()
 }

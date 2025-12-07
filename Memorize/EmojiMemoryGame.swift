@@ -1,9 +1,4 @@
 //
-//  EmojiMemoryGame.swift
-//  Memorize
-//
-//  ViewModel: Связь между Model и View
-//
 
 import SwiftUI
 
@@ -37,8 +32,6 @@ class EmojiMemoryGame: ObservableObject {
     var score: Int {
         model.score
     }
-    
-    // MARK: - Intents
     
     func choose(_ card: MemoryGame<String>.Card) {
         model.choose(card)

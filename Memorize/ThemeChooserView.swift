@@ -1,9 +1,4 @@
 //
-//  ThemeChooserView.swift
-//  Memorize
-//
-//  View: Экран выбора темы и сложности
-//
 
 import SwiftUI
 
@@ -80,8 +75,6 @@ struct ThemeChooserView: View {
     }
 }
 
-// MARK: - Difficulty Button
-
 struct DifficultyButton: View {
     let difficulty: Difficulty
     let isSelected: Bool
@@ -106,8 +99,6 @@ struct DifficultyButton: View {
         }
     }
 }
-
-// MARK: - Theme Card
 
 struct ThemeCard: View {
     let theme: Theme
@@ -151,8 +142,6 @@ struct ThemeCard: View {
     }
 }
 
-// MARK: - Random Theme Card
-
 struct RandomThemeCard: View {
     let difficulty: Difficulty
     let action: () -> Void
@@ -160,7 +149,6 @@ struct RandomThemeCard: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                // Иконка случайности
                 Image(systemName: "shuffle")
                     .font(.system(size: 30))
                     .frame(width: 60, height: 60)
@@ -170,7 +158,6 @@ struct RandomThemeCard: View {
                     )
                     .foregroundColor(.purple)
                 
-                // Информация
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Случайная тема")
                         .font(.headline)
@@ -193,8 +180,4 @@ struct RandomThemeCard: View {
             )
         }
     }
-}
-
-#Preview {
-    ThemeChooserView(viewModel: EmojiMemoryGame())
 }
