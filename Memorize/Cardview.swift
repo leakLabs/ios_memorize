@@ -9,6 +9,12 @@ import SwiftUI
 
 struct CardView: View {
     let card: MemoryGame<String>.Card
+    let theme: Theme
+    var forceShowFaceUp: Bool = false
+    
+    private var shouldShowFaceUp: Bool {
+        card.isFaceUp || forceShowFaceUp
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -19,25 +25,26 @@ struct CardView: View {
                     // Лицевая сторона карты
                     base.fill(.white)
                     base.strokeBorder(lineWidth: 2)
+                        .foregroundColor(theme.color)
                     
                     // Фрагмент круговой диаграммы (для красоты)
-                    Pie(startAngle: .degrees(-90), endAngle: .degrees(110))
-                        .fill(.green.opacity(0.3))
+                    Pie(startAngle: theme.pieStartAngle, endAngle: theme.pieEndAngle)
+                        .fill(theme.color.opacity(0.3))
                         .padding(5)
                     
                     // Эмодзи
                     Text(card.content)
                         .font(.system(size: min(geometry.size.width, geometry.size.height) * 0.5))
                 }
-                .opacity(card.isFaceUp ? 1 : 0)
+                .opacity(shouldShowFaceUp ? 1 : 0)
                 
                 // Обратная сторона карты
-                base.fill()
-                    .opacity(card.isFaceUp ? 0 : 1)
+                base.fill(theme.cardBackColor)
+                                    .opacity(shouldShowFaceUp ? 0 : 1)
             }
             .opacity(card.isMatched ? 0 : 1)
             .rotation3DEffect(
-                .degrees(card.isFaceUp ? 0 : 180),
+                .degrees(shouldShowFaceUp ? 0 : 180),
                 axis: (x: 0.0, y: 1.0, z: 0.0)
             )
         }
@@ -77,12 +84,12 @@ struct Pie: Shape {
 #Preview {
     VStack {
         HStack {
-            CardView(card: MemoryGame<String>.Card(isFaceUp: true, content: "🌸", id: 1))
-            CardView(card: MemoryGame<String>.Card(isFaceUp: false, content: "🌸", id: 2))
+            CardView(card: MemoryGame<String>.Card(isFaceUp: true, content: "🌸", id: 1), theme: .flowers)
+            CardView(card: MemoryGame<String>.Card(isFaceUp: false, content: "🌸", id: 2), theme: .flowers)
         }
         HStack {
-            CardView(card: MemoryGame<String>.Card(isFaceUp: true, isMatched: true, content: "🌺", id: 3))
-            CardView(card: MemoryGame<String>.Card(content: "🌻", id: 4))
+            CardView(card: MemoryGame<String>.Card(isFaceUp: true, isMatched: true, content: "🌺", id: 3), theme: .animals)
+            CardView(card: MemoryGame<String>.Card(content: "🌻", id: 4), theme: .food, forceShowFaceUp: true)
         }
     }
     .padding()

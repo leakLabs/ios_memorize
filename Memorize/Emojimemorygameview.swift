@@ -9,31 +9,116 @@ import SwiftUI
 
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
+    @State private var showingThemeChooser = false
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     
     private let aspectRatio: CGFloat = 2/3
     
     var body: some View {
-        VStack {
-            Text("Memorize")
-                .font(.largeTitle)
-                .fontWeight(.bold)
+        GeometryReader { geometry in
+            if verticalSizeClass == .compact {
+                // Альбомная ориентация
+                landscapeLayout
+            } else {
+                // Вертикальная ориентация
+                portraitLayout
+            }
+        }
+        .background(viewModel.theme.color.opacity(0.1))
+        .alert("Игра завершена! 🎉", isPresented: $viewModel.isGameCompleted) {
+            Button("Новая игра") {
+                viewModel.newGame(with: viewModel.theme)
+            }
+            Button("Выбрать тему") {
+                showingThemeChooser = true
+            }
+        } message: {
+            Text("Ваш счёт: \(viewModel.score)\nВы нашли все пары!")
+        }
+        .sheet(isPresented: $showingThemeChooser) {
+            ThemeChooserView(viewModel: viewModel)
+        }
+    }
+    
+    private var portraitLayout: some View {
+        VStack(spacing: 0) {
+            // Шапка с заголовком и счетом
+            header
+                .padding(.horizontal)
                 .padding(.top)
             
-            Spacer()
+            Spacer(minLength: 0)
             
             // Сетка с картами
             cards
+                .padding(.horizontal, 8)
             
-            Spacer()
+            Spacer(minLength: 0)
             
             // Кнопки управления
-            HStack(spacing: 40) {
-                newGameButton
-                shuffleButton
-            }
-            .padding(.bottom, 30)
+            controlButtons
+                .padding(.horizontal)
+                .padding(.bottom, 20)
         }
-        .padding()
+    }
+    
+    private var landscapeLayout: some View {
+        HStack(spacing: 0) {
+            // Левая панель - карты
+            cards
+                .padding(8)
+            
+            // Правая панель - управление
+            VStack(spacing: 20) {
+                header
+                Spacer()
+                VStack(spacing: 15) {
+                    chooseThemeButton
+                    newGameButton
+                    shuffleButton
+                    hintButton
+                }
+                Spacer()
+            }
+            .frame(maxWidth: 200)
+            .padding()
+        }
+    }
+    
+    private var header: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text("Memorize")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                // Название темы
+                Text(viewModel.theme.name)
+                    .font(.headline)
+                    .foregroundColor(viewModel.theme.color)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(viewModel.theme.color.opacity(0.2))
+                    )
+            }
+            
+            // Счет
+            HStack {
+                Text("Счет:")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                Text("\(viewModel.score)")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(viewModel.theme.color)
+                    .monospacedDigit()
+            }
+        }
     }
     
     private var cards: some View {
@@ -46,23 +131,51 @@ struct EmojiMemoryGameView: View {
             
             LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
                 ForEach(viewModel.cards) { card in
-                    CardView(card: card)
-                        .aspectRatio(aspectRatio, contentMode: .fit)
-                        .padding(4)
-                        .onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.5)) {
-                                viewModel.choose(card)
-                            }
+                    CardView(
+                        card: card,
+                        theme: viewModel.theme,
+                        forceShowFaceUp: viewModel.isShowingHint
+                    )
+                    .aspectRatio(aspectRatio, contentMode: .fit)
+                    .padding(4)
+                    .onTapGesture {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            viewModel.choose(card)
                         }
+                    }
                 }
             }
+        }
+    }
+    
+    private var controlButtons: some View {
+        HStack(spacing: 20) {
+            chooseThemeButton
+            newGameButton
+            shuffleButton
+            hintButton
+        }
+    }
+    
+    private var chooseThemeButton: some View {
+        Button(action: {
+            showingThemeChooser = true
+        }) {
+            VStack(spacing: 5) {
+                Image(systemName: "paintbrush.fill")
+                    .font(.system(size: 30))
+                Text("Theme")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(viewModel.theme.color)
         }
     }
     
     private var newGameButton: some View {
         Button(action: {
             withAnimation {
-                viewModel.newGame()
+                viewModel.newGame(with: viewModel.theme)
             }
         }) {
             VStack(spacing: 5) {
@@ -91,6 +204,34 @@ struct EmojiMemoryGameView: View {
             }
             .foregroundColor(.orange)
         }
+    }
+    
+    private var hintButton: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.useHint()
+            }
+        }) {
+            VStack(spacing: 5) {
+                ZStack {
+                    Image(systemName: "lightbulb.circle.fill")
+                        .font(.system(size: 30))
+                    
+                    if viewModel.hintsRemaining > 0 {
+                        Text("\(viewModel.hintsRemaining)")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .offset(x: 10, y: -10)
+                    }
+                }
+                Text("Hint")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(viewModel.hintsRemaining > 0 ? viewModel.theme.color : .gray)
+        }
+        .disabled(viewModel.hintsRemaining == 0)
     }
     
     private func gridItemWidthThatFits(
