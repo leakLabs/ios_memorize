@@ -164,18 +164,9 @@ struct EmojiMemoryGameView: View {
             }
         }) {
             VStack(spacing: 2) {
-                ZStack {
-                    Image(systemName: "lightbulb.circle.fill")
-                        .font(.system(size: 22))
-                    
-                    if viewModel.hintsRemaining > 0 {
-                        Text("\(viewModel.hintsRemaining)")
-                            .font(.system(size: 8))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .offset(x: 8, y: -8)
-                    }
-                }
+                Image(systemName: "lightbulb.circle.fill")
+                    .font(.system(size: 22))
+                
                 Text("Подсказка")
                     .font(.system(size: 9))
                     .fontWeight(.medium)
@@ -325,18 +316,8 @@ struct EmojiMemoryGameView: View {
             }
         }) {
             VStack(spacing: 5) {
-                ZStack {
-                    Image(systemName: "lightbulb.circle.fill")
-                        .font(.system(size: 30))
-                    
-                    if viewModel.hintsRemaining > 0 {
-                        Text("\(viewModel.hintsRemaining)")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .offset(x: 10, y: -10)
-                    }
-                }
+                Image(systemName: "lightbulb.circle.fill")
+                    .font(.system(size: 30))
                 Text("Подсказка")
                     .font(.caption)
                     .fontWeight(.semibold)
