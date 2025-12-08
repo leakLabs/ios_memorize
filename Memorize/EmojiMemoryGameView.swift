@@ -211,14 +211,14 @@ struct EmojiMemoryGameView: View {
         }
     }
     
-    // Версия для portrait
+    // Версия для portraitLayout
     private var cards: some View {
         GeometryReader { geometry in
             cardsGrid(in: geometry.size)
         }
     }
     
-    // Версия для landscape
+    // Версия для landscapeLayout
     private func cards(in size: CGSize) -> some View {
         cardsGrid(in: size)
     }

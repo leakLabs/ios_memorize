@@ -58,7 +58,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         
         if faceUpCards.count == 2 {
             if faceUpCards[0].content == faceUpCards[1].content {
-                // Карты совпали - помечаем обе
                 for index in cards.indices {
                     if cards[index].id == faceUpCards[0].id || cards[index].id == faceUpCards[1].id {
                         cards[index].isMatched = true

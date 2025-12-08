@@ -40,7 +40,7 @@ class EmojiMemoryGame: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             self.model.markMatchedCards()
             
-            // Проверяем завершение игры
+            //Проверка завершение игры
             if self.model.isGameCompleted {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.isGameCompleted = true
@@ -67,10 +67,10 @@ class EmojiMemoryGame: ObservableObject {
         hintsRemaining -= 1
         model.applyHintPenalty()
         
-        // Показываем все карты
+        // Показать все карты
         isShowingHint = true
         
-        // Через 1 секунду скрываем
+        // Через 1 секунду скрыть
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.isShowingHint = false
         }
